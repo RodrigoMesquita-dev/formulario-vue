@@ -4,7 +4,8 @@
             <div class="col-6 bg-light">
                 <span class="fs-4">ENTRADA DE DADOS</span>
                 <hr>
-                <form>
+                <!--<form @submit.prevent="enviar($event)">-->
+                <form @reset.prevent="resetar()">
                     <div class="mb-3 row">
                         <label class="col-3 col-form-label">Nome:</label>
                         <div class="col">
@@ -207,11 +208,31 @@
                             <textarea class="form-control" rows="3" v-model="form.descricao"></textarea>
                         </div>
                     </div>
+                    <div class="mb-3 row">
+                        <label class="col-3 col-form-label">Cursos:</label>
+                        <div class="col">
+                            <select class="form-select" v-model="form.curso">
+                                <option value="" disabled> -- Selecione uma opção --</option> <!-- É uma boa prática deixar uma opção disabled default de placeholder pra evitar incompatibilidades e conflitos-->
+                                <option v-for="curso in cursos" :value="curso.id" :key="curso.id">{{ curso.id }} - {{ curso.curso }}</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="mb-3 row">
+                        <label class="col-3 col-form-label">Avaliação:</label>
+                        <div class="col">
+                            <input-estrelas :numero-estrelas="5" />
+                        </div>  
+                    </div>
                     <hr>
                     <div class="mb-3 row">
                         <div class="col d-flex justify-content-between">
                             <button class="btn btn-secondary" type="reset">Limpar</button>
-                            <button class="btn btn-success" type="button">Enviar (btn)</button>
+                            <!--
+                                este evento não será do tipo submit e sim do tipo click
+                            -->
+                            <button class="btn btn-success" type="button" @click="enviar()">Enviar (btn)</button>
+                             <!-- se o submit estiver dentro de uma tag form o formulário em si é disparado e o submit é exec, no submit é feito um refresh da página,
+                                pra previnir de dar refresh podemos usar o modificador prevent-->
                             <button class="btn btn-success" type="submit">Enviar (submit)</button>
                         </div>                        
                     </div>
@@ -312,6 +333,9 @@
                     <!--<pre>{{ form.descricao }}</pre>-->
                     <div style="white-space: pre;">{{ form.descricao }}</div>
                 </div>
+                <div class="mb-3 row">
+                    <span>Curso: {{ form.curso }}</span>
+                </div>
             </div>
         </div>
 
@@ -322,15 +346,25 @@
 <script>
 
 import { vMaska } from "maska";
-import moment from 'moment';
+import InputEstrelas from "./InputEstrelas.vue";
 
 export default {
     // eslint-disable-next-line
     name: 'Formulario',
     directives: { maska: vMaska },
+    components: {
+        InputEstrelas,
+    },
     data: () => ({
         moment: {},
-        form: {
+        cursos: [
+            { id: 1, curso: 'Bancos de Dados Relacionais' },
+            { id: 2, curso: 'Desenvolvimento web avançado com vue' },
+            { id: 3, curso: 'Desenvolvimento web avançado com Laravel' },
+            { id: 4, curso: 'Curso completo do desenvolvedor Node js e mongo DB' },
+        ],
+        form: {},
+        formEstadoInicial: {
             nome: '',
             email: '',
             senha: '',
@@ -355,17 +389,31 @@ export default {
             alcance: 0,
             escondido: 'Esse input está escondido',
             arquivos: {},
-            descricao: ''
+            descricao: '',
+            curso: '', // da maneira que programamos podemos colocar o valor 2 e o vue vai selecionar aquele option na tela
         }
     }),
     methods:{
         selecionarArquivos(event) {
             // console.log(event.target.files);
             this.form.arquivos = event.target.files;
+        },
+        enviar() {
+            // normalmente quando estamos trabalhando com o envio de um form é interessante criar uma variável
+            // que vai receber uma cópia do objeto original 
+            // assim garantimos a integridade do objeto original
+            const formEnvio = Object.assign({}, this.form);
+
+            console.log(formEnvio);
+
+            // uma requisição http para o backend.
+        },
+        resetar() {
+            this.form = Object.assign({}, this.formEstadoInicial);
         }
     },
     created() {
-        this.moment = moment;
+        this.resetar();
     }
 }
 </script>
