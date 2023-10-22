@@ -32,7 +32,8 @@ export default {
             for(let i = 0; i < e; i++) {
                 this.estrelas[i].estilo = 'bi-star-fill estrela preenchida';
             }
-            console.log(e)
+            // this.$emit('avaliar', this.avaliacao);
+            this.$emit('update:avaliar', this.avaliacao); // eventos do tipo update são capturados pela diretiva v-model
         }
     }
 }

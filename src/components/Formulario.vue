@@ -220,7 +220,8 @@
                     <div class="mb-3 row">
                         <label class="col-3 col-form-label">Avaliação:</label>
                         <div class="col">
-                            <input-estrelas :numero-estrelas="5" />
+                            <!--<input-estrelas :numero-estrelas="5" @avaliar="form.avaliacao = $event " />-->
+                            <input-estrelas :numero-estrelas="5" v-model:avaliar="form.avaliacao" />
                         </div>  
                     </div>
                     <hr>
@@ -336,6 +337,9 @@
                 <div class="mb-3 row">
                     <span>Curso: {{ form.curso }}</span>
                 </div>
+                <div class="mb-3 row">
+                    <span>Avaliação: {{ form.avaliacao }}</span>
+                </div>
             </div>
         </div>
 
@@ -391,6 +395,7 @@ export default {
             arquivos: {},
             descricao: '',
             curso: '', // da maneira que programamos podemos colocar o valor 2 e o vue vai selecionar aquele option na tela
+            avaliacao: 0,
         }
     }),
     methods:{
